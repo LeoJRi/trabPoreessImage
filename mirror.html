@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espelhamento</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<style>
+    nav {
+        background-color: #26a69a;
+    }
+</style>
+<body>
+    <nav style="margin-bottom: 30px;">
+        <div class="nav-wrapper">
+            <a href="/index.html" class="brand-logo" style="margin-left: 20px;">Processamento de Imagem</a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <li style="margin-right: 20px;"><a href="/index.html">Operações</a></li>
+                <li style="margin-right: 20px;"><a href="/histogram.html" onclick="">Histograma</a></li>
+                <li style="margin-right: 20px;"><a href="/mirror.html" onclick="">Espelhamento</a></li>
+                <li style="margin-right: 20px;"><a href="/filters.html" >Filtros</a></li>
+                <li style="margin-right: 20px;"><a href="#" onclick="pageController.clean();">Limpar</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row">
+            <div class="col s6 m5">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="file-field input-field">
+                            <div class="btn">
+                                <span>Upload</span>
+                                <input type="file" id="image-mirror">
+                            </div>
+                            <div class="file-path-wrapper">
+                                <input class="file-path validate" type="text" placeholder="Adicione uma imagem...">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-image">
+                        <img src="images/no-img.png" id="display-image-mirror" style="height: 350px;">
+                        <span class="card-title">Imagem 1</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col s6 m7">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="card-content">
+                            <span class="card-title center">Imagem Espelhada</span>
+                        </div>
+                    </div>
+                    <div class="card-image">
+                        <img src="images/no-img.png" id="display-image-result" style="height: 350px;">
+                        <span class="card-title">Imagem Espelhada</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+   
+</body>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script src="js/imageHelps.js"></script>
+<script src="js/mirror.js"></script>
+<script>
+    let image_one_input = document.getElementById("image-mirror");
+
+    image_one_input.onchange = event => {
+        const output_img = document.getElementById("display-image-mirror");
+        let file = image_one_input.files[0];
+
+        console.log('Original Image:', file);
+
+        if(file){
+            output_img.src =  URL.createObjectURL(file);
+        }
+
+        output_img.onload = function () {
+            mirror.start(output_img);
+        };
+    }
+</script>
+</html>

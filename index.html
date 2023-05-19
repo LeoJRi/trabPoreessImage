@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <title>Processamento de Imagem</title>
+</head>
+<style>
+    nav {
+        background-color: #26a69a;
+    }
+</style>
+<body>
+    <nav style="margin-bottom: 30px;">
+        <div class="nav-wrapper">
+            <a href="/index.html" class="brand-logo" style="margin-left: 20px;">Processamento de Imagem</a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <li style="margin-right: 20px;"><a href="/index.html">Operações</a></li>
+                <li style="margin-right: 20px;"><a href="/histogram.html">Histograma</a></li>
+                <li style="margin-right: 20px;"><a href="/mirror.html" >Espelhamento</a></li>
+                <li style="margin-right: 20px;"><a href="/filters.html" >Filtros</a></li>
+                <li style="margin-right: 20px;"><a href="#" onclick="pageController.clean();">Limpar</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row">
+            <div class="col s6 m5">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="file-field input-field">
+                            <div class="btn">
+                                <span>Upload</span>
+                                <input type="file" id="image-one">
+                            </div>
+                            <div class="file-path-wrapper">
+                                <input class="file-path validate" type="text" placeholder="Adicione uma imagem...">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-image">
+                        <img src="images/no-img.png" id="display-image-one" style="height: 477px;">
+                        <span class="card-title">Imagem 1</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col s1 m2">
+                <div class="card">
+                    <div class="card-content center">
+                        <div class="row">
+                            <a class="waves-effect waves-light btn" onclick="calculator.addition(calculator.img_one, calculator.img_two);">
+                                <i class="material-icons ">add</i>
+                            </a>
+                        </div>
+                        <div class="row">
+                            <a class="waves-effect waves-light btn"
+                                onclick="calculator.subtraction(calculator.img_one, calculator.img_two);">
+                                <i class="material-icons">remove</i>
+                            </a>
+                        </div>
+                        <div class="row">
+                            <a class="waves-effect waves-light btn"
+                                onclick="calculator.multiplication(calculator.img_one, calculator.img_two);">
+                                <i class="material-icons">close</i>
+                            </a>
+                        </div>
+                        <div class="row">
+                            <a class="waves-effect waves-light btn"
+                                onclick="calculator.division(calculator.img_one, calculator.img_two);">
+                                <i class="material-icons">/</i>
+                            </a>
+                        </div>
+                        <div class="row">
+                            <a class="waves-effect waves-light btn"
+                                onclick="calculator.average(calculator.img_one, calculator.img_two);">
+                                Média
+                            </a>
+                        </div>
+                        <div class="row">
+                            <a class="waves-effect waves-light btn"
+                                onclick="calculator.blending(calculator.img_one, calculator.img_two, 8);">
+                                blending
+                            </a>
+                        </div>
+                        <div class="row">
+                            <a class="waves-effect waves-light btn"
+                                onclick="calculator.not(calculator.img_one, calculator.img_two);">
+                                Not
+                            </a>
+                        </div>
+                        <div class="row">
+                            <a class="waves-effect waves-light btn"
+                                onclick="calculator.or(calculator.img_one, calculator.img_two);">
+                                Or
+                            </a>
+                        </div>
+                        <div class="row">
+                            <a class="waves-effect waves-light btn"
+                                onclick="calculator.and(calculator.img_one, calculator.img_two);">
+                                And
+                            </a>
+                        </div>
+                        <div class="row">
+                            <a class="waves-effect waves-light btn"
+                                onclick="calculator.xor(calculator.img_one, calculator.img_two);">
+                                Xor
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col s6 m5">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="file-field input-field">
+                            <div class="btn">
+                                <span>Upload</span>
+                                <input type="file" id="image-two">
+                            </div>
+                            <div class="file-path-wrapper">
+                                <input class="file-path validate" type="text" placeholder="Adiciona uma imagem...">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-image">
+                        <img src="images/no-img.png" id="display-image-two" style="height: 477px;">
+                        <span class="card-title">Imagem 2</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="result-modal" class="modal" style="width: 611px;">
+            <div class="modal-content">
+                <h4 style="text-align: center;">Resultado</h4>
+                <img src="" id="display-image-result" style="max-height: 352px; display: flex; margin: 0 auto;">
+                
+                <div class="histogram" id="histogram"></div>
+            </div>
+            <div class="modal-footer">
+              <a href="#!" class="modal-close waves-effect waves-green btn-flat">Fechar</a>
+            </div>
+          </div>
+    </div>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.1/p5.min.js" integrity="sha512-NxocnqsXP3zm0Xb42zqVMvjQIktKEpTIbCXXyhBPxqGZHqhcOXHs4pXI/GoZ8lE+2NJONRifuBpi9DxC58L0Lw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script src="js/imageHelps.js"></script>
+<script src="js/imageCalculator.js"></script>
+<script>
+    let image_one_input = document.getElementById("image-one");
+    let image_two_input = document.getElementById("image-two");
+
+    image_one_input.onchange = event => {
+        const output_img = document.getElementById("display-image-one");
+        let file = image_one_input.files[0];
+
+        if(file){
+            output_img.src =  URL.createObjectURL(file);
+        }
+    }
+
+    image_two_input.onchange = event => {
+        const output_img = document.getElementById("display-image-two");
+        let file = image_two_input.files[0];
+
+        if(file){
+            output_img.src =  URL.createObjectURL(file);
+        }
+    }
+
+    const calculator = {
+        img_one: document.getElementById('display-image-one'),
+        img_two: document.getElementById('display-image-two'),
+        addition: (img_one, img_two) => {
+            let image = ImageCalculator.addition(img_one, img_two)
+
+            pageController.openResultModal(image.src);
+        },
+        //Subtração de 50% do pixel da segunda imagem
+        subtraction: (img_one, img_two) => {
+            let image = ImageCalculator.subtraction(img_one, img_two);
+
+            pageController.openResultModal(image.src);
+        },
+        //Para uma melhor visualização foi multiplicado 15% de cada pixel.
+        //E truncando o pixel que excede o valor de 255 em 255.
+        multiplication: (img_one, img_two) => {
+            let image = ImageCalculator.multiplication(img_one, img_two);
+
+            pageController.openResultModal(image.src);
+        },
+        //ToFix
+        division: (img_one, img_two) => {
+            let image = ImageCalculator.division(img_one, img_two);
+
+            pageController.openResultModal(image.src);
+        },
+        average: (img_one, img_two) => {
+            let image = ImageCalculator.addition(img_one, img_two);
+
+            pageController.openResultModal(image.src);
+        },
+        blending: (img_one, img_two, k) => {
+            let image = ImageCalculator.blending(img_one, img_two);
+
+            pageController.openResultModal(image.src);
+        },
+        not: (img_one, img_two) => {
+            let image = ImageCalculator.not(img_one, img_two);
+
+            pageController.openResultModal(image.src);
+        },
+        or:(img_one, img_two) => {
+            let image = ImageCalculator.or(img_one, img_two);
+
+            pageController.openResultModal(image.src);
+        },
+        and: (img_one, img_two) => {
+            let image = ImageCalculator.and(img_one, img_two);
+
+            pageController.openResultModal(image.src);
+        },
+        xor: (img_one, img_two) => {
+            let image = ImageCalculator.xor(img_one, img_two);
+
+            pageController.openResultModal(image.src);
+        }
+    };
+
+    const pageController = {
+        clean: () => {
+            const no_img_src = "images/no-img.png";
+
+            image_one_input.value = null;
+            image_two_input.value = null;
+
+            let files_path = document.getElementsByClassName("file-path");
+
+            files_path.forEach(element => {
+                element.value = "";
+            });
+
+            let display_img_one = document.getElementById("display-image-one");
+            let display_img_two = document.getElementById("display-image-two");
+
+            display_img_one.src = no_img_src;
+            display_img_two.src = no_img_src;
+        },
+        getModalInstance: () => {
+            let modal = document.getElementById('result-modal');
+            return M.Modal.getInstance(modal);
+        },
+        openResultModal: (src) => {
+            let outputResult = document.getElementById("display-image-result");
+            outputResult.src = src;
+
+            pageController.getModalInstance().open();
+        },
+        closeResultModal: () => {
+            pageController.getModalInstance().close();
+        }
+    };
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var elems = document.querySelectorAll('.modal');
+        var instances = M.Modal.init(elems, {});
+    });
+    //TO DO: Adicionar equalização de histograma
+</script>
+</html>

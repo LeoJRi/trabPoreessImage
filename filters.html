@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <title>Processamento de Imagem</title>
+</head>
+<style>
+    nav {
+        background-color: #26a69a;
+    }
+</style>
+<body>
+    <nav style="margin-bottom: 30px;">
+        <div class="nav-wrapper">
+            <a href="/index.html" class="brand-logo" style="margin-left: 20px;">Processamento de Imagem</a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <li style="margin-right: 20px;"><a href="/index.html">Operações</a></li>
+                <li style="margin-right: 20px;"><a href="/histogram.html">Histograma</a></li>
+                <li style="margin-right: 20px;"><a href="/mirror.html" >Espelhamento</a></li>
+                <li style="margin-right: 20px;"><a href="/filters.html" >Filtros</a></li>
+                <li style="margin-right: 20px;"><a href="#" onclick="pageController.clean();">Limpar</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row">
+            <div class="col s6 m5">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="file-field input-field">
+                            <div class="btn">
+                                <span>Upload</span>
+                                <input type="file" id="image-one">
+                            </div>
+                            <div class="file-path-wrapper">
+                                <input class="file-path validate" type="text" placeholder="Adicione uma imagem...">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-image">
+                        <img src="images/no-img.png" id="display-image-one" style="height: 477px;">
+                        <span class="card-title">Imagem 1</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col s1 m2">
+                <div class="card">
+                    <div class="card-content center">
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <select>
+                                    <option value="3" selected>3 x 3</option>
+                                    <option value="5">5 x 5</option>
+                                    <option value="7">7 x 7</option>
+                                </select>
+                                <label>Dimensões</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <a class="waves-effect waves-light btn"
+                                onclick="filter.averageFilter(image);">
+                                Média
+                            </a>
+                        </div>
+                        <div class="row">
+                            <a class="waves-effect waves-light btn"
+                                onclick="filter.minValue(image);">
+                                Valor Minimo
+                            </a>
+                        </div>
+                        <div class="row">
+                            <a class="waves-effect waves-light btn"
+                                onclick="filter.maxValue(image);">
+                                Valor Máximo
+                            </a>
+                        </div>
+                        <div class="row">
+                            <a class="waves-effect waves-light btn"
+                                onclick="filter.median(image);">
+                                Mediana
+                            </a>
+                        </div>
+                        <div class="row">
+                            <a class="waves-effect waves-light btn"
+                                onclick="filter.order(image);">
+                                Ordem
+                            </a>
+                        </div>
+                        <div class="row">
+                            <a class="waves-effect waves-light btn"
+                                onclick="filter.smoothing(image);">
+                                Suavização Conservativa
+                            </a>
+                        </div>
+                        <div class="row">
+                            <a class="waves-effect waves-light btn"
+                                onclick="filter.gaussian(image);">
+                                Gaussiana
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col s6 m5">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="card-content">
+                            <span class="card-title center">Resultado</span>
+                        </div>
+                    </div>
+                    <div class="card-image">
+                        <img src="images/no-img.png" id="display-image-result" style="height: 477px;">
+                        <span class="card-title">Resultado</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.1/p5.min.js" integrity="sha512-NxocnqsXP3zm0Xb42zqVMvjQIktKEpTIbCXXyhBPxqGZHqhcOXHs4pXI/GoZ8lE+2NJONRifuBpi9DxC58L0Lw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script src="js/imageHelps.js"></script>
+<script src="js/filters/average-filter.js"></script>
+<script src="js/filters/minimum-filter.js"></script>
+<script src="js/filters/maximum-filter.js"></script>
+<script src="js/filters/median-filter.js"> </script>
+<script src="js/filters/order-filter.js"></script>
+<script src="js/filters/conservative-smoothing.js"></script>
+<script src="js/filters/gaussian-filter.js"></script>
+<script src="js/filter.js"></script>
+<script>
+    let image_one_input = document.getElementById("image-one");
+    var image = undefined;
+    var dimension = undefined;
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var elems = document.querySelectorAll('select');
+        var instances = M.FormSelect.init(elems);
+    });
+
+    image_one_input.onchange = event => {
+        const output_img = document.getElementById("display-image-one");
+        let file = image_one_input.files[0];
+
+        if(file){
+            output_img.src =  URL.createObjectURL(file);
+        }
+    
+        output_img.onload = function() {
+            image = output_img;
+        };
+    }
+
+</script>
+</html>
